@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: forgequote_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-forgequote}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-forgequote_dev_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-forgequote_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forgequote -d forgequote_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
