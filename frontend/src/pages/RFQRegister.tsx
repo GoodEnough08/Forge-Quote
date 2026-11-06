@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Plus, Eye, X } from "lucide-react";
+import { Search, Plus, Eye, X, Calculator } from "lucide-react";
 import { api } from "../services/api";
 import { RFQ, RFQListResponse, RFQStatus } from "../types";
 import { useAuth } from "../context/AuthContext";
@@ -18,18 +18,18 @@ const STATUS_OPTIONS: RFQStatus[] = [
 const statusBadgeStyle = (status: RFQStatus) => {
   switch (status) {
     case "New":
-      return "bg-blue-50 text-accent border-blue-200";
+      return "bg-blue-50 text-blue-700 border-blue-200";
     case "Estimating":
       return "bg-indigo-50 text-indigo-700 border-indigo-200";
     case "Awaiting Approval":
       return "bg-amber-50 text-amber-700 border-amber-200";
     case "Approved":
     case "Won":
-      return "bg-emerald-50 text-success border-emerald-200";
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
     case "Lost":
       return "bg-red-50 text-red-700 border-red-200";
     default:
-      return "bg-gray-100 text-ink border-border";
+      return "bg-slate-100 text-slate-700 border-slate-200";
   }
 };
 
@@ -110,27 +110,37 @@ export const RFQRegister: React.FC = () => {
     <div className="space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-primary">RFQ Register</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">RFQ Register</h1>
           <p className="text-xs text-muted">
             Track incoming customer drawings, part specifications, and estimation status.
           </p>
         </div>
 
-        {user?.role === "ESTIMATOR" && (
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-medium rounded hover:bg-primary/90 transition"
+        <div className="flex items-center gap-3">
+          <Link
+            to="/costing"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#00EA64] hover:bg-[#00BD51] text-[#0E141E] text-xs font-bold rounded-lg shadow-sm transition"
           >
-            <Plus className="w-4 h-4" />
-            <span>New RFQ</span>
-          </button>
-        )}
+            <Calculator className="w-4 h-4" />
+            <span>Open Costing</span>
+          </Link>
+
+          {user?.role === "ESTIMATOR" && (
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#172B4D] hover:bg-[#1f375e] text-white text-xs font-bold rounded-lg shadow-sm transition cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>New RFQ</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-white border border-border rounded p-4 grid grid-cols-1 sm:grid-cols-4 gap-3">
+      <div className="bg-white border border-border rounded-xl p-4 grid grid-cols-1 sm:grid-cols-4 gap-3 shadow-xs">
         <div className="relative sm:col-span-2">
-          <Search className="w-4 h-4 text-muted absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-muted absolute left-3 top-3" />
           <input
             type="text"
             value={search}
@@ -139,7 +149,7 @@ export const RFQRegister: React.FC = () => {
               setSearch(e.target.value);
             }}
             placeholder="Search RFQ ID, part name, customer, or material..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs border border-border rounded focus:outline-none focus:border-accent"
+            className="w-full pl-9 pr-3 py-2 text-xs border border-border rounded-lg focus:outline-none focus:border-[#00EA64] focus:ring-1 focus:ring-[#00EA64]"
           />
         </div>
 
@@ -149,7 +159,7 @@ export const RFQRegister: React.FC = () => {
             setPage(1);
             setStatusFilter(e.target.value);
           }}
-          className="px-3 py-1.5 text-xs border border-border rounded bg-white focus:outline-none focus:border-accent"
+          className="px-3 py-2 text-xs border border-border rounded-lg bg-white focus:outline-none focus:border-[#00EA64] font-medium"
         >
           <option value="">All Statuses</option>
           {STATUS_OPTIONS.map((st) => (
@@ -167,16 +177,16 @@ export const RFQRegister: React.FC = () => {
             setCustomerFilter(e.target.value);
           }}
           placeholder="Filter by customer..."
-          className="px-3 py-1.5 text-xs border border-border rounded focus:outline-none focus:border-accent"
+          className="px-3 py-2 text-xs border border-border rounded-lg focus:outline-none focus:border-[#00EA64]"
         />
       </div>
 
       {/* Main RFQ Table */}
-      <div className="bg-white border border-border rounded overflow-hidden">
+      <div className="bg-white border border-border rounded-xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-border bg-canvas text-[11px] font-semibold text-muted uppercase">
+              <tr className="border-b border-border bg-slate-50/70 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
                 <th className="py-3 px-4">RFQ ID</th>
                 <th className="py-3 px-4">Customer</th>
                 <th className="py-3 px-4">Part Name</th>
@@ -206,43 +216,51 @@ export const RFQRegister: React.FC = () => {
                 rfqs.map((rfq) => {
                   const part = rfq.parts[0];
                   return (
-                    <tr key={rfq.id} className="hover:bg-canvas/50">
-                      <td className="py-3 px-4 font-semibold text-primary">
-                        <Link to={`/rfqs/${rfq.id}`} className="hover:underline">
+                    <tr key={rfq.id} className="hover:bg-slate-50/80 transition">
+                      <td className="py-3.5 px-4 font-bold text-slate-900 font-mono">
+                        <Link to={`/rfqs/${rfq.id}`} className="hover:text-emerald-600">
                           {rfq.rfq_number}
                         </Link>
                       </td>
-                      <td className="py-3 px-4">
-                        <div className="font-medium text-ink">{rfq.customer_name}</div>
+                      <td className="py-3.5 px-4">
+                        <div className="font-semibold text-slate-800">{rfq.customer_name}</div>
                         <div className="text-[11px] text-muted">{rfq.industry}</div>
                       </td>
-                      <td className="py-3 px-4 font-medium text-ink">{part?.part_name}</td>
-                      <td className="py-3 px-4 text-muted">{part?.material_spec}</td>
-                      <td className="py-3 px-4 text-right tabular-nums">
+                      <td className="py-3.5 px-4 font-semibold text-slate-900">{part?.part_name}</td>
+                      <td className="py-3.5 px-4 text-slate-600">{part?.material_spec}</td>
+                      <td className="py-3.5 px-4 text-right tabular-nums font-mono">
                         {Number(part?.gross_weight_kg).toFixed(2)}
                       </td>
-                      <td className="py-3 px-4 text-right tabular-nums">
+                      <td className="py-3.5 px-4 text-right tabular-nums font-mono font-medium">
                         {part?.annual_volume.toLocaleString("en-IN")}
                       </td>
-                      <td className="py-3 px-4 text-muted">
+                      <td className="py-3.5 px-4 text-slate-600">
                         {rfq.assigned_estimator_name || "Unassigned"}
                       </td>
-                      <td className="py-3 px-4 tabular-nums">{rfq.due_date}</td>
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4 tabular-nums text-slate-600">{rfq.due_date}</td>
+                      <td className="py-3.5 px-4">
                         <span
-                          className={`px-2 py-0.5 rounded border text-[11px] font-medium ${statusBadgeStyle(
+                          className={`px-2.5 py-0.5 rounded-full border text-[10px] font-bold ${statusBadgeStyle(
                             rfq.status
                           )}`}
                         >
                           {rfq.status}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-3.5 px-4 text-right space-x-1.5">
+                        <Link
+                          to={`/costing?rfq_id=${rfq.id}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#00EA64] hover:bg-[#00BD51] text-[#0E141E] rounded-md font-bold text-[11px] transition shadow-xs"
+                          title="Cost this part"
+                        >
+                          <Calculator className="w-3 h-3" />
+                          <span>Cost</span>
+                        </Link>
                         <Link
                           to={`/rfqs/${rfq.id}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 border border-border rounded text-ink hover:bg-canvas"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 border border-slate-300 rounded-md text-slate-700 hover:bg-slate-100 font-semibold text-[11px] transition"
                         >
-                          <Eye className="w-3.5 h-3.5" />
+                          <Eye className="w-3 h-3" />
                           <span>Details</span>
                         </Link>
                       </td>
@@ -254,7 +272,7 @@ export const RFQRegister: React.FC = () => {
           </table>
         </div>
 
-        <div className="px-4 py-3 border-t border-border flex items-center justify-between text-xs text-muted">
+        <div className="px-4 py-3 border-t border-border flex items-center justify-between text-xs text-muted bg-slate-50/50">
           <span>
             Showing {rfqs.length} of {total} total RFQs
           </span>
@@ -262,14 +280,14 @@ export const RFQRegister: React.FC = () => {
             <button
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
-              className="px-3 py-1 border border-border rounded disabled:opacity-40"
+              className="px-3 py-1.5 border border-slate-300 rounded-md bg-white hover:bg-slate-100 text-slate-700 font-semibold disabled:opacity-40 cursor-pointer"
             >
               Previous
             </button>
             <button
               disabled={page * 10 >= total}
               onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1 border border-border rounded disabled:opacity-40"
+              className="px-3 py-1.5 border border-slate-300 rounded-md bg-white hover:bg-slate-100 text-slate-700 font-semibold disabled:opacity-40 cursor-pointer"
             >
               Next
             </button>
@@ -279,127 +297,130 @@ export const RFQRegister: React.FC = () => {
 
       {/* Create RFQ Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-md border border-border max-w-lg w-full p-6 shadow-lg">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl border border-border max-w-lg w-full p-6 shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-border mb-4">
-              <h2 className="text-base font-bold text-primary">Register New Manufacturing RFQ</h2>
-              <button onClick={() => setShowCreateModal(false)} className="text-muted hover:text-ink">
-                <X className="w-4 h-4" />
+              <h2 className="text-base font-bold text-slate-900">Register New Manufacturing RFQ</h2>
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="text-slate-400 hover:text-slate-700 cursor-pointer p-1 rounded-md"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {formError && (
-              <div className="mb-3 p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded">
+              <div className="mb-3 p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg">
                 {formError}
               </div>
             )}
 
-            <form onSubmit={handleCreateSubmit} className="space-y-3 text-xs">
+            <form onSubmit={handleCreateSubmit} className="space-y-3.5 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-medium mb-1">RFQ Reference ID</label>
+                  <label className="block font-semibold text-slate-700 mb-1">RFQ Number</label>
                   <input
                     required
                     value={newRfq.rfq_number}
                     onChange={(e) => setNewRfq({ ...newRfq, rfq_number: e.target.value })}
-                    className="w-full px-2.5 py-1.5 border border-border rounded"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg font-mono font-semibold"
                   />
                 </div>
                 <div>
-                  <label className="block font-medium mb-1">Quotation Due Date</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Target Due Date</label>
                   <input
                     type="date"
                     required
                     value={newRfq.due_date}
                     onChange={(e) => setNewRfq({ ...newRfq, due_date: e.target.value })}
-                    className="w-full px-2.5 py-1.5 border border-border rounded"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg tabular-nums"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-medium mb-1">Customer Name</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Customer Name</label>
                   <input
                     required
                     value={newRfq.customer_name}
                     onChange={(e) => setNewRfq({ ...newRfq, customer_name: e.target.value })}
                     placeholder="e.g. Mahindra Tractors"
-                    className="w-full px-2.5 py-1.5 border border-border rounded"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg"
                   />
                 </div>
                 <div>
-                  <label className="block font-medium mb-1">Industry Sector</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Industry Sector</label>
                   <input
                     required
                     value={newRfq.industry}
                     onChange={(e) => setNewRfq({ ...newRfq, industry: e.target.value })}
-                    className="w-full px-2.5 py-1.5 border border-border rounded"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-medium mb-1">Part Name</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Part Name</label>
                   <input
                     required
                     value={newRfq.part_name}
                     onChange={(e) => setNewRfq({ ...newRfq, part_name: e.target.value })}
                     placeholder="e.g. Bevel Pinion"
-                    className="w-full px-2.5 py-1.5 border border-border rounded"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg"
                   />
                 </div>
                 <div>
-                  <label className="block font-medium mb-1">Material Grade</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Material Grade</label>
                   <input
                     required
                     value={newRfq.material_spec}
                     onChange={(e) => setNewRfq({ ...newRfq, material_spec: e.target.value })}
                     placeholder="e.g. 20MnCr5"
-                    className="w-full px-2.5 py-1.5 border border-border rounded"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg font-semibold"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-medium mb-1">Gross Weight (kg)</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Gross Weight (kg)</label>
                   <input
                     type="number"
                     step="0.001"
                     required
                     value={newRfq.gross_weight_kg}
                     onChange={(e) => setNewRfq({ ...newRfq, gross_weight_kg: e.target.value })}
-                    className="w-full px-2.5 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg tabular-nums font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block font-medium mb-1">Annual Volume (pcs)</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Annual Volume (pcs)</label>
                   <input
                     type="number"
                     required
                     value={newRfq.annual_volume}
                     onChange={(e) => setNewRfq({ ...newRfq, annual_volume: e.target.value })}
-                    className="w-full px-2.5 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg tabular-nums font-mono"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-medium mb-1">Est. Cycle Time (min)</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Est. Cycle Time (min)</label>
                   <input
                     type="number"
                     step="0.1"
                     required
                     value={newRfq.cycle_time_minutes}
                     onChange={(e) => setNewRfq({ ...newRfq, cycle_time_minutes: e.target.value })}
-                    className="w-full px-2.5 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg tabular-nums font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block font-medium mb-1">Machine Hourly Rate (₹/hr)</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Machine Rate (₹/hr)</label>
                   <input
                     type="number"
                     step="1"
@@ -408,22 +429,22 @@ export const RFQRegister: React.FC = () => {
                     onChange={(e) =>
                       setNewRfq({ ...newRfq, machine_hourly_rate_inr: e.target.value })
                     }
-                    className="w-full px-2.5 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg tabular-nums font-mono"
                   />
                 </div>
               </div>
 
-              <div className="pt-3 flex justify-end gap-2 border-t border-border">
+              <div className="pt-4 flex justify-end gap-2.5 border-t border-border mt-4">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-1.5 border border-border rounded text-ink"
+                  className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 cursor-pointer transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-primary text-white font-medium rounded"
+                  className="px-5 py-2 bg-[#00EA64] hover:bg-[#00BD51] text-[#0E141E] font-bold rounded-lg shadow-sm cursor-pointer transition"
                 >
                   Create RFQ
                 </button>

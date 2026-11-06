@@ -6,10 +6,18 @@ export default {
       colors: {
         canvas: "#F7F8FA",
         primary: "#172B4D",
-        accent: "#2563EB",
-        success: "#16845B",
-        border: "#E5E7EB",
-        ink: "#1F2937",
+        accent: "#00EA64", // HackerRank radiant green
+        hk: {
+          DEFAULT: "#00EA64",
+          dark: "#00BD51",
+          hover: "#05DE60",
+          soft: "#E8FAF0",
+          border: "#A1E8C2",
+          darkbg: "#0E141E",
+        },
+        success: "#00BD51",
+        border: "#E2E8F0",
+        ink: "#1E293B",
         muted: "#64748B",
       },
       fontFamily: {

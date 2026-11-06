@@ -6,11 +6,11 @@ export const PhasePlaceholder: React.FC<{ title: string; phase: number; details:
   details,
 }) => {
   return (
-    <div className="bg-white border border-border rounded p-8 max-w-2xl">
-      <span className="text-xs font-semibold uppercase px-2.5 py-1 rounded bg-blue-50 text-accent border border-blue-200">
+    <div className="bg-white border border-border rounded-xl p-8 max-w-2xl shadow-xs">
+      <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300">
         Scheduled for Phase {phase}
       </span>
-      <h1 className="text-xl font-bold text-primary mt-3">{title}</h1>
+      <h1 className="text-xl font-bold text-slate-900 mt-4 tracking-tight">{title}</h1>
       <p className="text-xs text-muted mt-2 leading-relaxed">{details}</p>
     </div>
   );

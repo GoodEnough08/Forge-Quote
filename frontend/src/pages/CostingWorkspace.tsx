@@ -12,6 +12,7 @@ import {
   FileCheck,
   RefreshCw,
   Info,
+  Sparkles,
 } from "lucide-react";
 import { api, costingApi, ratesApi } from "../services/api";
 import {
@@ -277,14 +278,17 @@ export const CostingWorkspace: React.FC = () => {
   return (
     <div className="space-y-4">
       {/* Top Banner & RFQ Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-border rounded p-4 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-border rounded-xl p-4 shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded bg-primary text-white flex items-center justify-center">
-            <Calculator className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-lg bg-[#00EA64]/20 border border-[#00EA64]/30 text-emerald-800 flex items-center justify-center">
+            <Calculator className="w-5 h-5 text-emerald-700" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-primary tracking-tight">
-              Flagship Costing Workspace
+            <h1 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <span>Flagship Costing Workspace</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300">
+                Phase 2
+              </span>
             </h1>
             <p className="text-xs text-muted">
               Deterministic Python Decimal calculation sheet with 3 volume tiers & immutable snapshots.
@@ -293,12 +297,12 @@ export const CostingWorkspace: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-muted font-medium">Select RFQ:</span>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-slate-600 font-bold">RFQ:</span>
             <select
               value={selectedRfqId}
               onChange={(e) => setSelectedRfqId(e.target.value)}
-              className="px-2.5 py-1.5 border border-border rounded bg-white font-semibold text-primary"
+              className="px-3 py-2 border border-slate-300 rounded-lg bg-white font-bold text-slate-900 focus:border-[#00EA64] shadow-2xs"
             >
               {rfqList.map((r) => (
                 <option key={r.id} value={r.id}>
@@ -308,31 +312,32 @@ export const CostingWorkspace: React.FC = () => {
             </select>
           </div>
 
+          {/* HackerRank Radiant Green Action Button */}
           <button
             onClick={handleSaveDraft}
             disabled={saving}
-            className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded text-xs font-semibold shadow-sm transition ${
+            className={`inline-flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition shadow-sm cursor-pointer ${
               hasUnsavedChanges
-                ? "bg-accent hover:bg-accent/90 text-white animate-pulse"
-                : "bg-primary hover:bg-primary/90 text-white"
+                ? "bg-[#00EA64] hover:bg-[#00BD51] text-[#0E141E] ring-2 ring-[#00EA64]/40"
+                : "bg-[#00EA64] hover:bg-[#00BD51] text-[#0E141E]"
             } disabled:opacity-50`}
           >
-            <Save className="w-4 h-4" />
+            <Save className="w-4 h-4 stroke-[2.5]" />
             <span>{saving ? "Saving Snapshot..." : hasUnsavedChanges ? "Save Changes*" : "Save Draft"}</span>
           </button>
         </div>
       </div>
 
       {saveSuccessMsg && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-success text-xs rounded flex items-center gap-2 font-medium">
-          <CheckCircle2 className="w-4 h-4" />
+        <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs rounded-xl flex items-center gap-2 font-bold shadow-xs">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>{saveSuccessMsg}</span>
         </div>
       )}
 
       {errorMsg && (
-        <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded flex items-center gap-2">
-          <AlertCircle className="w-4 h-4" />
+        <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center gap-2 shadow-xs">
+          <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{errorMsg}</span>
         </div>
       )}
@@ -341,48 +346,48 @@ export const CostingWorkspace: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* ================= LEFT PANEL (3 COLS): PART INFORMATION ================= */}
         <div className="lg:col-span-3 space-y-4">
-          <div className="bg-white border border-border rounded p-4 space-y-3 shadow-sm">
-            <div className="flex items-center justify-between border-b border-border pb-2">
-              <span className="text-xs font-bold text-primary uppercase tracking-wider">
+          <div className="bg-white border border-border rounded-xl p-4 space-y-3 shadow-xs">
+            <div className="flex items-center justify-between border-b border-border pb-2.5">
+              <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                 Part & Customer Details
               </span>
-              <span className="text-[10px] bg-canvas border border-border px-1.5 py-0.5 rounded text-muted font-mono">
+              <span className="text-[10px] bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md text-slate-800 font-mono font-bold">
                 {rfqDetails?.rfq_number}
               </span>
             </div>
 
-            <div className="space-y-2.5 text-xs">
+            <div className="space-y-3 text-xs">
               <div>
-                <span className="text-muted block text-[11px]">Part Name</span>
-                <span className="font-semibold text-ink block">{part?.part_name || "—"}</span>
+                <span className="text-muted block text-[11px] font-medium">Part Name</span>
+                <span className="font-bold text-slate-900 block mt-0.5">{part?.part_name || "—"}</span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <span className="text-muted block text-[11px]">Drawing Number</span>
-                  <span className="font-mono text-ink block">{part?.drawing_number || "—"}</span>
+                  <span className="text-muted block text-[11px] font-medium">Drawing Number</span>
+                  <span className="font-mono font-bold text-slate-800 block mt-0.5">{part?.drawing_number || "—"}</span>
                 </div>
                 <div>
-                  <span className="text-muted block text-[11px]">Customer</span>
-                  <span className="text-ink font-medium block">{rfqDetails?.customer_name || "—"}</span>
+                  <span className="text-muted block text-[11px] font-medium">Customer</span>
+                  <span className="text-slate-800 font-semibold block mt-0.5">{rfqDetails?.customer_name || "—"}</span>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <span className="text-muted block text-[11px]">Annual Volume</span>
-                  <span className="font-semibold text-ink block tabular-nums">
+                  <span className="text-muted block text-[11px] font-medium">Annual Volume</span>
+                  <span className="font-bold text-slate-900 block tabular-nums mt-0.5">
                     {part?.annual_volume ? part.annual_volume.toLocaleString("en-IN") : "—"} pcs
                   </span>
                 </div>
                 <div>
-                  <span className="text-muted block text-[11px]">Gross Weight</span>
-                  <span className="font-semibold text-ink block tabular-nums">
+                  <span className="text-muted block text-[11px] font-medium">Gross Weight</span>
+                  <span className="font-bold text-slate-900 block tabular-nums font-mono mt-0.5">
                     {grossWeight} kg
                   </span>
                 </div>
               </div>
               <div>
-                <span className="text-muted block text-[11px]">Manufacturing Routing</span>
-                <span className="text-ink text-[11px] block bg-canvas p-2 rounded border border-border mt-0.5">
+                <span className="text-muted block text-[11px] font-medium">Manufacturing Routing</span>
+                <span className="text-slate-800 text-[11px] font-medium block bg-slate-50 p-2.5 rounded-lg border border-slate-200 mt-1">
                   {part?.process_type || "Cold/Hot Forging + CNC Machining"}
                 </span>
               </div>
@@ -390,18 +395,18 @@ export const CostingWorkspace: React.FC = () => {
           </div>
 
           {/* Rate Master Source Snapshot Pill */}
-          <div className="bg-blue-50/50 border border-blue-100 rounded p-3 text-xs space-y-1.5">
-            <div className="flex items-center gap-1.5 text-accent font-semibold text-[11px] uppercase tracking-wider">
-              <Info className="w-3.5 h-3.5" />
-              <span>Rate Versioning & Snapshot Source</span>
+          <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5 text-xs space-y-2 shadow-xs">
+            <div className="flex items-center gap-1.5 text-emerald-800 font-bold text-[11px] uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Rate Snapshot Assurance</span>
             </div>
-            <p className="text-muted text-[11px] leading-relaxed">
-              Base rates are snapshot on costing date. If steel prices change tomorrow in Rate Masters,
+            <p className="text-slate-600 text-[11px] leading-relaxed">
+              Base rates are snapshot on costing date. If steel prices fluctuate in Rate Masters tomorrow,
               this quotation maintains its immutable record.
             </p>
-            <div className="pt-1 flex items-center justify-between text-[11px] text-ink font-medium border-t border-blue-100/80">
+            <div className="pt-2 flex items-center justify-between text-[11px] font-semibold text-slate-800 border-t border-emerald-200">
               <span>Active Grade: {materialGrade}</span>
-              <Link to="/rates" className="text-accent hover:underline">
+              <Link to="/rates" className="text-emerald-700 hover:text-emerald-800 font-bold hover:underline">
                 View Masters →
               </Link>
             </div>
@@ -410,26 +415,26 @@ export const CostingWorkspace: React.FC = () => {
 
         {/* ================= CENTER PANEL (5 COLS): EDITABLE COST BREAKDOWN ================= */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-white border border-border rounded p-5 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between border-b border-border pb-2">
-              <h2 className="text-sm font-bold text-primary">Editable Cost Breakdown</h2>
+          <div className="bg-white border border-border rounded-xl p-5 space-y-4 shadow-xs">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <h2 className="text-sm font-bold text-slate-900">Editable Cost Breakdown</h2>
               <span className="text-[11px] text-muted font-medium">All amounts in INR (₹)</span>
             </div>
 
             {/* 1. Material & Scrap Section */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-ink uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
                   1. Raw Material & Forging Scrap
                 </span>
-                <span className="text-xs font-semibold text-accent font-mono tabular-nums">
+                <span className="text-xs font-bold text-emerald-700 font-mono tabular-nums bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                   ₹{calculation?.material_cost || "0.00"}
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="grid grid-cols-3 gap-2.5 text-xs">
                 <div>
-                  <label className="text-muted block text-[11px] mb-1">Gross Wt (kg)</label>
+                  <label className="text-slate-600 block text-[11px] font-semibold mb-1">Gross Wt (kg)</label>
                   <input
                     type="number"
                     step="0.001"
@@ -438,15 +443,15 @@ export const CostingWorkspace: React.FC = () => {
                       setGrossWeight(e.target.value);
                       setHasUnsavedChanges(true);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-border rounded font-semibold tabular-nums"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg font-bold tabular-nums font-mono focus:border-[#00EA64]"
                   />
                 </div>
                 <div>
-                  <label className="text-muted block text-[11px] mb-1">Material Grade</label>
+                  <label className="text-slate-600 block text-[11px] font-semibold mb-1">Material Grade</label>
                   <select
                     value={materialGrade}
                     onChange={(e) => handleSelectMaterialGrade(e.target.value)}
-                    className="w-full px-2 py-1.5 border border-border rounded bg-white text-ink font-medium"
+                    className="w-full px-2 py-1.5 border border-border rounded-lg bg-white text-slate-800 font-semibold focus:border-[#00EA64]"
                   >
                     {materialRates.map((m) => (
                       <option key={m.id} value={m.material_grade}>
@@ -456,7 +461,7 @@ export const CostingWorkspace: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="text-muted block text-[11px] mb-1">Scrap (%)</label>
+                  <label className="text-slate-600 block text-[11px] font-semibold mb-1">Scrap (%)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -465,7 +470,7 @@ export const CostingWorkspace: React.FC = () => {
                       setScrapPercentage(e.target.value);
                       setHasUnsavedChanges(true);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg tabular-nums font-mono focus:border-[#00EA64]"
                   />
                 </div>
               </div>
@@ -475,7 +480,7 @@ export const CostingWorkspace: React.FC = () => {
             <div className="space-y-3 pt-3 border-t border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-bold text-ink uppercase tracking-wider block">
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
                     2. Machining & Processing Operations
                   </span>
                   <span className="text-[10px] text-muted">
@@ -485,40 +490,41 @@ export const CostingWorkspace: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleAddOperation}
-                  className="inline-flex items-center gap-1 text-[11px] text-accent font-medium hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs bg-emerald-50 hover:bg-[#00EA64] text-emerald-800 hover:text-[#0E141E] border border-emerald-300 font-bold px-2.5 py-1 rounded-md transition cursor-pointer"
                 >
-                  <Plus className="w-3.5 h-3.5" /> Add Step
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Step</span>
                 </button>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {operations.map((op, idx) => (
                   <div
                     key={idx}
-                    className="bg-canvas border border-border rounded p-2.5 space-y-2 text-xs"
+                    className="bg-slate-50 border border-border rounded-lg p-3 space-y-2.5 text-xs"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <input
                         value={op.operation_name}
                         onChange={(e) =>
                           handleOperationChange(idx, "operation_name", e.target.value)
                         }
                         placeholder="Operation Name"
-                        className="px-2 py-1 bg-white border border-border rounded text-xs font-medium w-2/3"
+                        className="px-2.5 py-1 bg-white border border-border rounded-md text-xs font-semibold w-2/3 focus:border-[#00EA64]"
                       />
                       <button
                         type="button"
                         onClick={() => handleRemoveOperation(idx)}
-                        className="text-muted hover:text-red-600 transition p-1"
+                        className="text-slate-400 hover:text-red-600 transition p-1 cursor-pointer"
                         title="Delete operation"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <label className="text-[10px] text-muted block mb-0.5">Work Center</label>
+                        <label className="text-[10px] text-slate-500 font-semibold block mb-0.5">Work Center</label>
                         <select
                           value={op.work_center}
                           onChange={(e) => {
@@ -534,7 +540,7 @@ export const CostingWorkspace: React.FC = () => {
                               handleOperationChange(idx, "machine_rate_id", matched.id);
                             }
                           }}
-                          className="w-full px-1.5 py-1 bg-white border border-border rounded text-[11px]"
+                          className="w-full px-2 py-1 bg-white border border-border rounded-md text-[11px] font-medium"
                         >
                           {machineRates.map((m) => (
                             <option key={m.id} value={m.work_center}>
@@ -545,7 +551,7 @@ export const CostingWorkspace: React.FC = () => {
                       </div>
 
                       <div>
-                        <label className="text-[10px] text-muted block mb-0.5">Cycle Time (min)</label>
+                        <label className="text-[10px] text-slate-500 font-semibold block mb-0.5">Cycle Time (min)</label>
                         <input
                           type="number"
                           step="0.1"
@@ -553,12 +559,12 @@ export const CostingWorkspace: React.FC = () => {
                           onChange={(e) =>
                             handleOperationChange(idx, "cycle_time_minutes", e.target.value)
                           }
-                          className="w-full px-2 py-1 bg-white border border-border rounded tabular-nums"
+                          className="w-full px-2 py-1 bg-white border border-border rounded-md tabular-nums font-mono font-semibold"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] text-muted block mb-0.5">Rate (₹/hr)</label>
+                        <label className="text-[10px] text-slate-500 font-semibold block mb-0.5">Rate (₹/hr)</label>
                         <input
                           type="number"
                           step="1"
@@ -566,7 +572,7 @@ export const CostingWorkspace: React.FC = () => {
                           onChange={(e) =>
                             handleOperationChange(idx, "machine_hourly_rate", e.target.value)
                           }
-                          className="w-full px-2 py-1 bg-white border border-border rounded tabular-nums font-mono"
+                          className="w-full px-2 py-1 bg-white border border-border rounded-md tabular-nums font-mono font-bold"
                         />
                       </div>
                     </div>
@@ -574,9 +580,9 @@ export const CostingWorkspace: React.FC = () => {
                 ))}
               </div>
 
-              <div className="flex items-center justify-between text-xs pt-1 font-semibold text-ink">
+              <div className="flex items-center justify-between text-xs pt-2 font-bold text-slate-900 border-t border-slate-100">
                 <span>Total Processing Cost:</span>
-                <span className="font-mono text-accent">
+                <span className="font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                   ₹{calculation?.total_processing_cost || "0.00"}
                 </span>
               </div>
@@ -584,13 +590,13 @@ export const CostingWorkspace: React.FC = () => {
 
             {/* 3. Labour, Overheads & Logistics */}
             <div className="space-y-3 pt-3 border-t border-border">
-              <span className="text-xs font-bold text-ink uppercase tracking-wider block">
+              <span className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
                 3. Direct Costs, Overhead & Freight
               </span>
 
               <div className="grid grid-cols-4 gap-2 text-xs">
                 <div>
-                  <label className="text-muted block text-[10px] mb-1">Labour (₹)</label>
+                  <label className="text-slate-500 block text-[10px] font-semibold mb-1">Labour (₹)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -599,11 +605,11 @@ export const CostingWorkspace: React.FC = () => {
                       setLabourCost(e.target.value);
                       setHasUnsavedChanges(true);
                     }}
-                    className="w-full px-2 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2 py-1.5 border border-border rounded-lg tabular-nums font-mono font-medium"
                   />
                 </div>
                 <div>
-                  <label className="text-muted block text-[10px] mb-1">Overhead (₹)</label>
+                  <label className="text-slate-500 block text-[10px] font-semibold mb-1">Overhead (₹)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -612,11 +618,11 @@ export const CostingWorkspace: React.FC = () => {
                       setOverheadCost(e.target.value);
                       setHasUnsavedChanges(true);
                     }}
-                    className="w-full px-2 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2 py-1.5 border border-border rounded-lg tabular-nums font-mono font-medium"
                   />
                 </div>
                 <div>
-                  <label className="text-muted block text-[10px] mb-1">Freight (₹)</label>
+                  <label className="text-slate-500 block text-[10px] font-semibold mb-1">Freight (₹)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -625,11 +631,11 @@ export const CostingWorkspace: React.FC = () => {
                       setFreightCost(e.target.value);
                       setHasUnsavedChanges(true);
                     }}
-                    className="w-full px-2 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2 py-1.5 border border-border rounded-lg tabular-nums font-mono font-medium"
                   />
                 </div>
                 <div>
-                  <label className="text-muted block text-[10px] mb-1">Other (₹)</label>
+                  <label className="text-slate-500 block text-[10px] font-semibold mb-1">Other (₹)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -638,7 +644,7 @@ export const CostingWorkspace: React.FC = () => {
                       setOtherCost(e.target.value);
                       setHasUnsavedChanges(true);
                     }}
-                    className="w-full px-2 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2 py-1.5 border border-border rounded-lg tabular-nums font-mono font-medium"
                   />
                 </div>
               </div>
@@ -646,13 +652,13 @@ export const CostingWorkspace: React.FC = () => {
 
             {/* 4. Commercial Margin & Taxes */}
             <div className="space-y-3 pt-3 border-t border-border">
-              <span className="text-xs font-bold text-ink uppercase tracking-wider block">
+              <span className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
                 4. Margin & GST Parameters
               </span>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
-                  <label className="text-muted block text-[11px] mb-1">Target Margin (%)</label>
+                  <label className="text-slate-600 block text-[11px] font-semibold mb-1">Target Margin (%)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -661,11 +667,11 @@ export const CostingWorkspace: React.FC = () => {
                       setMarginPercentage(e.target.value);
                       setHasUnsavedChanges(true);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-border rounded tabular-nums font-semibold"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg tabular-nums font-mono font-bold"
                   />
                 </div>
                 <div>
-                  <label className="text-muted block text-[11px] mb-1">GST Rate (%)</label>
+                  <label className="text-slate-600 block text-[11px] font-semibold mb-1">GST Rate (%)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -674,7 +680,7 @@ export const CostingWorkspace: React.FC = () => {
                       setGstPercentage(e.target.value);
                       setHasUnsavedChanges(true);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-border rounded tabular-nums"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg tabular-nums font-mono"
                   />
                 </div>
               </div>
@@ -684,13 +690,13 @@ export const CostingWorkspace: React.FC = () => {
 
         {/* ================= RIGHT PANEL (4 COLS): STICKY QUOTATION SUMMARY ================= */}
         <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-20">
-          <div className="bg-white border border-border rounded p-5 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between border-b border-border pb-2">
-              <h2 className="text-sm font-bold text-primary flex items-center gap-1.5">
-                <FileCheck className="w-4 h-4 text-success" />
+          <div className="bg-white border border-border rounded-xl p-5 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between border-b border-border pb-2.5">
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                <FileCheck className="w-4 h-4 text-emerald-600" />
                 <span>Quotation Summary</span>
               </h2>
-              <span className="text-[10px] font-semibold text-success bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+              <span className="text-[10px] font-bold text-[#0E141E] bg-[#00EA64] px-2 py-0.5 rounded-full shadow-xs">
                 LIVE CALC
               </span>
             </div>
@@ -698,32 +704,32 @@ export const CostingWorkspace: React.FC = () => {
             {/* Per-Unit Price Breakdown */}
             <div className="space-y-2 text-xs divide-y divide-border">
               <div className="flex justify-between py-1.5">
-                <span className="text-muted">Raw Material Cost:</span>
-                <span className="font-mono text-ink tabular-nums">
+                <span className="text-slate-600">Raw Material Cost:</span>
+                <span className="font-mono font-semibold text-slate-900 tabular-nums">
                   ₹{calculation?.material_cost || "0.00"}
                 </span>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-muted">Total Processing (Machining):</span>
-                <span className="font-mono text-ink tabular-nums">
+                <span className="text-slate-600">Total Processing (Machining):</span>
+                <span className="font-mono font-semibold text-slate-900 tabular-nums">
                   ₹{calculation?.total_processing_cost || "0.00"}
                 </span>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-muted">Labour + Overheads + Logistics:</span>
-                <span className="font-mono text-ink tabular-nums">
+                <span className="text-slate-600">Labour + Overheads + Logistics:</span>
+                <span className="font-mono font-semibold text-slate-900 tabular-nums">
                   ₹{((Number(labourCost) || 0) + (Number(overheadCost) || 0) + (Number(freightCost) || 0) + (Number(otherCost) || 0)).toFixed(2)}
                 </span>
               </div>
-              <div className="flex justify-between py-2 font-semibold bg-canvas px-2 rounded">
-                <span className="text-primary">Manufacturing Subtotal:</span>
-                <span className="font-mono text-primary tabular-nums">
+              <div className="flex justify-between py-2 font-bold bg-slate-50 px-2.5 rounded-lg border border-slate-200">
+                <span className="text-slate-900">Manufacturing Subtotal:</span>
+                <span className="font-mono text-slate-900 tabular-nums">
                   ₹{calculation?.manufacturing_subtotal || "0.00"}
                 </span>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-muted">Commercial Margin ({marginPercentage}%):</span>
-                <span className="font-mono text-emerald-700 font-semibold tabular-nums">
+                <span className="text-slate-600">Commercial Margin ({marginPercentage}%):</span>
+                <span className="font-mono text-emerald-700 font-bold tabular-nums">
                   + ₹{calculation?.margin_amount || "0.00"}
                 </span>
               </div>
@@ -731,18 +737,18 @@ export const CostingWorkspace: React.FC = () => {
               {/* Final Quotation Price (Per Unit) */}
               <div className="pt-2">
                 <div className="flex justify-between items-baseline">
-                  <span className="text-xs font-bold text-primary">Final Price / Unit (excl. GST):</span>
-                  <span className="text-lg font-bold font-mono text-primary tabular-nums">
+                  <span className="text-xs font-bold text-slate-900">Final Price / Unit (excl. GST):</span>
+                  <span className="text-xl font-bold font-mono text-emerald-700 tabular-nums">
                     ₹{calculation?.final_price_per_unit || "0.00"}
                   </span>
                 </div>
                 <div className="flex justify-between text-[11px] text-muted mt-1">
                   <span>Applicable GST (18%):</span>
-                  <span className="tabular-nums">₹{calculation?.gst_amount || "0.00"}</span>
+                  <span className="tabular-nums font-mono">₹{calculation?.gst_amount || "0.00"}</span>
                 </div>
-                <div className="flex justify-between text-[11px] text-muted">
+                <div className="flex justify-between text-[11px] text-slate-800 font-bold mt-0.5">
                   <span>Landed Price with GST:</span>
-                  <span className="font-semibold text-ink tabular-nums">
+                  <span className="tabular-nums font-mono">
                     ₹{calculation?.total_price_with_gst_per_unit || "0.00"}
                   </span>
                 </div>
@@ -752,39 +758,39 @@ export const CostingWorkspace: React.FC = () => {
             {/* Multi-Volume Tier Calculations Section */}
             <div className="pt-4 border-t border-border space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-primary flex items-center gap-1">
-                  <TrendingUp className="w-3.5 h-3.5 text-accent" />
-                  <span>Volume Tier Comparison</span>
+                <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>3 Volume Tier Comparisons</span>
                 </span>
-                <span className="text-[10px] text-muted">3 Batch Tiers</span>
+                <span className="text-[10px] text-muted font-medium">Batch Break</span>
               </div>
 
               <div className="space-y-2">
                 {calculation?.volume_tiers?.map((tier) => (
                   <div
                     key={tier.quantity}
-                    className="p-2.5 rounded bg-canvas border border-border text-xs space-y-1 hover:border-accent transition"
+                    className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs space-y-1.5 hover:border-[#00EA64] transition"
                   >
-                    <div className="flex items-center justify-between font-bold text-primary">
+                    <div className="flex items-center justify-between font-bold text-slate-900">
                       <span>{tier.quantity.toLocaleString("en-IN")} units</span>
-                      <span className="font-mono text-accent tabular-nums">
-                        ₹{tier.quotation_price_per_unit} / unit
+                      <span className="font-mono text-emerald-700 text-sm tabular-nums">
+                        ₹{tier.quotation_price_per_unit} <span className="text-[10px] font-normal text-slate-500">/ unit</span>
                       </span>
                     </div>
 
-                    <div className="flex justify-between text-[11px] text-muted">
+                    <div className="flex justify-between text-[11px] text-slate-600">
                       <span>Total Quotation Value:</span>
-                      <span className="font-semibold text-ink font-mono tabular-nums">
+                      <span className="font-bold text-slate-900 font-mono tabular-nums">
                         ₹{Number(tier.total_quotation_value).toLocaleString("en-IN", {
                           minimumFractionDigits: 2,
                         })}
                       </span>
                     </div>
 
-                    <div className="flex justify-between text-[10px] text-muted">
+                    <div className="flex justify-between text-[10px] text-muted pt-1 border-t border-slate-200/60">
                       <span>GST: ₹{Number(tier.total_gst).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
-                      <span>
-                        Grand Total: ₹{Number(tier.grand_total_with_gst).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                      <span className="font-semibold text-slate-700">
+                        Grand: ₹{Number(tier.grand_total_with_gst).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                   </div>
@@ -797,4 +803,3 @@ export const CostingWorkspace: React.FC = () => {
     </div>
   );
 };
-
