@@ -308,3 +308,109 @@ export interface HistoricalQuoteComparison {
     material_match: boolean;
   };
 }
+
+// --- PHASE 4 TYPES ---
+
+export type QuotationStatusType =
+  | "Draft"
+  | "Awaiting Approval"
+  | "Approved"
+  | "Rejected"
+  | "Revision Requested"
+  | "Sent";
+
+export interface QuotationTierData {
+  id?: number;
+  quantity: number;
+  unit_price: number | string;
+  gst_amount: number | string;
+  unit_price_with_gst: number | string;
+  total_value: number | string;
+  total_with_gst: number | string;
+}
+
+export interface QuotationData {
+  id: number;
+  quotation_number: string;
+  version: number;
+  rfq: number;
+  rfq_number: string;
+  costing_sheet?: number | null;
+  status: QuotationStatusType;
+  customer_name: string;
+  customer_contact?: string;
+  customer_address?: string;
+  part_name: string;
+  drawing_number: string;
+  material_spec: string;
+  gross_weight_kg: number | string;
+  annual_volume: number;
+  unit_price: number | string;
+  total_annual_value: number | string;
+  gst_percentage: number | string;
+  requires_approval: boolean;
+  delivery_terms: string;
+  payment_terms: string;
+  validity_days: number;
+  quotation_date: string;
+  pdf_file_path?: string | null;
+  pdf_generated_at?: string | null;
+  created_by?: number;
+  created_by_name?: string;
+  created_at: string;
+  updated_at: string;
+  tiers?: QuotationTierData[];
+  approvals_history?: {
+    id: number;
+    revision_number: number;
+    status: string;
+    decision_reason: string;
+    submitted_at: string;
+    reviewed_at: string | null;
+    submitted_by_name: string;
+    reviewed_by_name: string | null;
+  }[];
+}
+
+export type ApprovalDecisionStatus =
+  | "Pending"
+  | "Approved"
+  | "Rejected"
+  | "Revision Requested";
+
+export interface QuotationApprovalItem {
+  id: number;
+  quotation: number;
+  quotation_number: string;
+  rfq_id: number;
+  rfq_number: string;
+  customer_name: string;
+  part_name: string;
+  drawing_number: string;
+  material_spec: string;
+  annual_volume: number;
+  total_annual_value: number | string;
+  unit_price: number | string;
+  margin_percentage: number;
+  revision_number: number;
+  status: ApprovalDecisionStatus;
+  decision_reason: string;
+  submitted_by: number;
+  submitted_by_name: string;
+  reviewed_by: number | null;
+  reviewed_by_name: string | null;
+  submitted_at: string;
+  reviewed_at: string | null;
+}
+
+export interface ApprovalDetailPayload {
+  approval: QuotationApprovalItem;
+  costing_breakdown?: CostingSheetData | null;
+  customer_details: {
+    contact: string;
+    address: string;
+    delivery_terms: string;
+    payment_terms: string;
+    validity_days: number;
+  };
+}

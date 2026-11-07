@@ -10,7 +10,8 @@ import { CostingWorkspace } from "./pages/CostingWorkspace";
 import { RateMastersPage } from "./pages/RateMastersPage";
 import { AIIntakeWorkspace } from "./pages/AIIntakeWorkspace";
 import { HistoricalQuotesPage } from "./pages/HistoricalQuotesPage";
-import { PhasePlaceholder } from "./pages/PhasePlaceholder";
+import { ApprovalsPage } from "./pages/ApprovalsPage";
+import { SettingsPage } from "./pages/SettingsPage";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
@@ -50,27 +51,11 @@ export const App: React.FC = () => {
             <Route path="intake" element={<AIIntakeWorkspace />} />
             <Route path="history" element={<HistoricalQuotesPage />} />
 
-            {/* Upcoming Phase Placeholders */}
-            <Route
-              path="approvals"
-              element={
-                <PhasePlaceholder
-                  title="Sales Head Commercial Approval Inbox"
-                  phase={4}
-                  details="Enforcement of the ₹25,00,000 annual value threshold, margin inspection, and approve/reject/revision workflows will be implemented in Phase 4."
-                />
-              }
-            />
-            <Route
-              path="settings"
-              element={
-                <PhasePlaceholder
-                  title="System & Environment Settings"
-                  phase={5}
-                  details="AI extraction provider status, GST configuration assumptions, and role audit logs."
-                />
-              }
-            />
+            {/* Phase 4: Commercial Approval Inbox & Quotations */}
+            <Route path="approvals" element={<ApprovalsPage />} />
+
+            {/* Phase 5: System & Environment Governance Settings */}
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

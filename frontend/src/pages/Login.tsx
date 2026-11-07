@@ -133,18 +133,18 @@ export const Login: React.FC = () => {
             <button
               type="button"
               onClick={() => fillDemoAccount("estimator")}
-              className="text-xs py-2 px-3 border border-emerald-500/40 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-300 font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
+              className="text-xs py-2 px-3 border border-[#00EA64]/50 rounded-lg bg-[#00EA64]/10 hover:bg-[#00EA64]/25 text-[#00EA64] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm"
             >
               <UserCheck className="w-3.5 h-3.5" />
-              <span>Estimator</span>
+              <span>Estimator Demo</span>
             </button>
             <button
               type="button"
               onClick={() => fillDemoAccount("sales")}
-              className="text-xs py-2 px-3 border border-teal-500/40 rounded-lg bg-teal-950/40 hover:bg-teal-900/60 text-teal-300 font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
+              className="text-xs py-2 px-3 border border-teal-400/50 rounded-lg bg-teal-400/10 hover:bg-teal-400/25 text-teal-300 font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm"
             >
               <Shield className="w-3.5 h-3.5" />
-              <span>Sales Head</span>
+              <span>Sales Head Demo</span>
             </button>
           </div>
         </div>

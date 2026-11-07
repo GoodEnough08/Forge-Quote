@@ -10,6 +10,9 @@ import {
   SuggestedRouting,
   HistoricalQuotation,
   HistoricalQuoteComparison,
+  QuotationData,
+  QuotationApprovalItem,
+  ApprovalDetailPayload,
 } from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
@@ -159,6 +162,105 @@ export const historyApi = {
       quote_id: quoteId,
       rfq_id: rfqId,
     });
+    return res.data;
+  },
+};
+
+// Phase 4 Commercial Quotations API
+export const quotationsApi = {
+  listQuotations: async (params?: { status?: string; customer?: string }): Promise<QuotationData[]> => {
+    const res = await api.get<QuotationData[]>("/quotations/", { params });
+    return res.data;
+  },
+  getQuotation: async (id: number): Promise<QuotationData> => {
+    const res = await api.get<QuotationData>(`/quotations/${id}`);
+    return res.data;
+  },
+  createQuotation: async (payload: {
+    costing_sheet_id?: number;
+    rfq_id?: number;
+    customer_contact?: string;
+    customer_address?: string;
+    payment_terms?: string;
+    validity_days?: number;
+  }): Promise<QuotationData> => {
+    const res = await api.post<QuotationData>("/quotations/", payload);
+    return res.data;
+  },
+  generatePdf: async (id: number): Promise<{ detail: string; quotation_number: string; version: number }> => {
+    const res = await api.post(`/quotations/${id}/generate-pdf`);
+    return res.data;
+  },
+  sendQuotation: async (id: number): Promise<QuotationData> => {
+    const res = await api.post<QuotationData>(`/quotations/${id}/send`);
+    return res.data;
+  },
+  downloadPdf: async (id: number, filename?: string): Promise<void> => {
+    const res = await api.get(`/quotations/${id}/pdf`, { responseType: "blob" });
+    const blob = new Blob([res.data], { type: "application/pdf" });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename || `Quotation-${id}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  },
+  viewPdf: async (id: number): Promise<void> => {
+    const res = await api.get(`/quotations/${id}/pdf`, { responseType: "blob" });
+    const blob = new Blob([res.data], { type: "application/pdf" });
+    const url = window.URL.createObjectURL(blob);
+    window.open(url, "_blank");
+  },
+  getPdfDownloadUrl: (id: number) => {
+    return `${API_BASE_URL}/quotations/${id}/pdf`;
+  },
+};
+
+// Phase 4 Approval Workflow API
+export const approvalsApi = {
+  listApprovals: async (status?: string): Promise<QuotationApprovalItem[]> => {
+    const params = status && status !== "ALL" ? { status } : {};
+    const res = await api.get<QuotationApprovalItem[]>("/approvals/", { params });
+    return res.data;
+  },
+  getApproval: async (id: number): Promise<ApprovalDetailPayload> => {
+    const res = await api.get<ApprovalDetailPayload>(`/approvals/${id}`);
+    return res.data;
+  },
+  submitForApproval: async (quotationId: number): Promise<QuotationApprovalItem> => {
+    const res = await api.post<QuotationApprovalItem>("/approvals/submit", {
+      quotation_id: quotationId,
+    });
+    return res.data;
+  },
+  approve: async (id: number, reason?: string): Promise<QuotationApprovalItem> => {
+    const res = await api.post<QuotationApprovalItem>(`/approvals/${id}/approve`, {
+      reason: reason || "",
+    });
+    return res.data;
+  },
+  reject: async (id: number, reason: string): Promise<QuotationApprovalItem> => {
+    const res = await api.post<QuotationApprovalItem>(`/approvals/${id}/reject`, {
+      reason,
+    });
+    return res.data;
+  },
+  requestRevision: async (id: number, reason: string): Promise<QuotationApprovalItem> => {
+    const res = await api.post<QuotationApprovalItem>(`/approvals/${id}/revision`, {
+      reason,
+    });
+    return res.data;
+  },
+  resubmit: async (quotationId: number): Promise<QuotationApprovalItem> => {
+    const res = await api.post<QuotationApprovalItem>("/approvals/resubmit", {
+      quotation_id: quotationId,
+    });
+    return res.data;
+  },
+  getHistory: async (quotationId: number): Promise<QuotationApprovalItem[]> => {
+    const res = await api.get<QuotationApprovalItem[]>(`/approvals/history/${quotationId}`);
     return res.data;
   },
 };

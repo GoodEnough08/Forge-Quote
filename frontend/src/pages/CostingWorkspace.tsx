@@ -13,8 +13,10 @@ import {
   RefreshCw,
   Info,
   Sparkles,
+  ShieldCheck,
+  ArrowRight,
 } from "lucide-react";
-import { api, costingApi, ratesApi } from "../services/api";
+import { api, costingApi, ratesApi, quotationsApi, approvalsApi } from "../services/api";
 import {
   CostingOperationInput,
   CostingCalculationResponse,
@@ -273,6 +275,54 @@ export const CostingWorkspace: React.FC = () => {
     }
   };
 
+  const [submittingQuote, setSubmittingQuote] = useState(false);
+
+  const handleCreateAndSubmitQuotation = async () => {
+    const partId = rfqDetails?.parts[0]?.id;
+    if (!partId) return;
+
+    setSubmittingQuote(true);
+    setErrorMsg(null);
+    try {
+      const payload = {
+        part_id: partId,
+        gross_weight_kg: Number(grossWeight),
+        material_rate_per_kg: Number(materialRatePerKg),
+        material_grade: materialGrade,
+        material_rate_id: selectedMaterialRateId,
+        scrap_percentage: Number(scrapPercentage),
+        operations: operations.map((op) => ({
+          operation_name: op.operation_name,
+          work_center: op.work_center,
+          cycle_time_minutes: Number(op.cycle_time_minutes),
+          machine_hourly_rate: Number(op.machine_hourly_rate),
+          machine_rate_id: op.machine_rate_id,
+        })),
+        labour_cost: Number(labourCost) || 0,
+        overhead_cost: Number(overheadCost) || 0,
+        freight_cost: Number(freightCost) || 0,
+        other_cost: Number(otherCost) || 0,
+        margin_percentage: Number(marginPercentage) || 0,
+        gst_percentage: Number(gstPercentage) || 18,
+      };
+
+      const savedSheet = await costingApi.saveDraft(payload);
+      setHasUnsavedChanges(false);
+
+      const quote = await quotationsApi.createQuotation({
+        costing_sheet_id: savedSheet.id,
+        rfq_id: Number(selectedRfqId),
+      });
+
+      await approvalsApi.submitForApproval(quote.id);
+      setSaveSuccessMsg(`Quotation ${quote.quotation_number} generated & submitted for Sales Head approval!`);
+    } catch (err: any) {
+      setErrorMsg(err?.response?.data?.detail || "Failed to submit quotation for approval.");
+    } finally {
+      setSubmittingQuote(false);
+    }
+  };
+
   const part = rfqDetails?.parts[0];
 
   return (
@@ -312,26 +362,47 @@ export const CostingWorkspace: React.FC = () => {
             </select>
           </div>
 
-          {/* HackerRank Radiant Green Action Button */}
+          {/* Save Draft Action Button */}
           <button
             onClick={handleSaveDraft}
-            disabled={saving}
-            className={`inline-flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition shadow-sm cursor-pointer ${
+            disabled={saving || submittingQuote}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition shadow-xs cursor-pointer ${
               hasUnsavedChanges
-                ? "bg-[#00EA64] hover:bg-[#00BD51] text-[#0E141E] ring-2 ring-[#00EA64]/40"
-                : "bg-[#00EA64] hover:bg-[#00BD51] text-[#0E141E]"
+                ? "bg-[#172B4D] hover:bg-[#1f375e] text-white border border-[#172B4D]"
+                : "bg-white text-slate-800 hover:bg-slate-50 border border-slate-300"
             } disabled:opacity-50`}
           >
-            <Save className="w-4 h-4 stroke-[2.5]" />
-            <span>{saving ? "Saving Snapshot..." : hasUnsavedChanges ? "Save Changes*" : "Save Draft"}</span>
+            <Save className="w-4 h-4" />
+            <span>{saving ? "Saving..." : hasUnsavedChanges ? "Save Changes*" : "Save Draft"}</span>
+          </button>
+
+          {/* HackerRank Radiant Green Create & Submit Quotation Action Button */}
+          <button
+            onClick={handleCreateAndSubmitQuotation}
+            disabled={submittingQuote || saving}
+            className="inline-flex items-center gap-2 px-4.5 py-2 rounded-lg text-xs font-bold bg-[#00EA64] hover:bg-[#00BD51] text-[#0E141E] transition shadow-sm cursor-pointer disabled:opacity-50"
+          >
+            <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+            <span>{submittingQuote ? "Submitting..." : "Submit for Approval"}</span>
           </button>
         </div>
       </div>
 
       {saveSuccessMsg && (
-        <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs rounded-xl flex items-center gap-2 font-bold shadow-xs">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>{saveSuccessMsg}</span>
+        <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs rounded-xl flex items-center justify-between font-bold shadow-xs">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{saveSuccessMsg}</span>
+          </div>
+          {saveSuccessMsg.includes("Quotation") && (
+            <Link
+              to="/approvals"
+              className="inline-flex items-center gap-1 text-emerald-900 underline hover:text-emerald-700 text-xs ml-4"
+            >
+              <span>Go to Approvals Inbox</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          )}
         </div>
       )}
 

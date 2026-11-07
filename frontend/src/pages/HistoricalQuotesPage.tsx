@@ -526,7 +526,7 @@ export const HistoricalQuotesPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedQuote(null)}
-                className="px-5 py-2 bg-slate-900 text-white font-bold text-xs rounded-lg hover:bg-slate-800 transition cursor-pointer"
+                className="px-5 py-2 bg-[#172B4D] hover:bg-[#1f375e] text-white font-bold text-xs rounded-lg shadow-sm transition cursor-pointer"
               >
                 Close Snapshot
               </button>
@@ -652,7 +652,7 @@ export const HistoricalQuotesPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setComparisonData(null)}
-                className="px-5 py-2 bg-slate-900 text-white font-bold text-xs rounded-lg hover:bg-slate-800 transition cursor-pointer"
+                className="px-5 py-2 bg-[#172B4D] hover:bg-[#1f375e] text-white font-bold text-xs rounded-lg shadow-sm transition cursor-pointer"
               >
                 Close Comparison
               </button>

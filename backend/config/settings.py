@@ -76,7 +76,21 @@ ASGI_APPLICATION = "config.asgi.application"
 USE_SQLITE_FOR_TESTS = os.getenv("USE_SQLITE_FOR_TESTS", "False").lower() == "true"
 SQLITE_DB_PATH = os.getenv("SQLITE_DB_PATH", "")
 
-if USE_SQLITE_FOR_TESTS:
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    from urllib.parse import urlparse
+    url = urlparse(database_url)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": url.path.lstrip("/"),
+            "USER": url.username or "",
+            "PASSWORD": url.password or "",
+            "HOST": url.hostname or "localhost",
+            "PORT": str(url.port or 5432),
+        }
+    }
+elif USE_SQLITE_FOR_TESTS:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -108,8 +122,10 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "False").lower() in ("true", "1", "yes")
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
