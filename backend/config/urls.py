@@ -8,7 +8,7 @@ def health_check(_request):
         {
             "status": "healthy",
             "service": "ForgeQuote Django REST API",
-            "phase": 2,
+            "phase": 3,
         }
     )
 
@@ -20,4 +20,6 @@ urlpatterns = [
     path("api/v1/rfqs", include("apps.rfqs.urls")),
     path("api/v1/rates/", include("apps.rate_masters.urls")),
     path("api/v1/costing/", include("apps.costing.urls")),
+    path("api/v1/intake/", include("apps.ai_intake.urls")),
+    path("api/v1/history/", include("apps.history.urls")),
 ]

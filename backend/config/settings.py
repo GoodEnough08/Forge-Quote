@@ -142,3 +142,8 @@ SIMPLE_JWT = {
 
 AI_PROVIDER = os.getenv("AI_PROVIDER", "mock")
 AI_API_KEY = os.getenv("AI_API_KEY", "")
+
+# Private secure document storage for confidential drawings & RFQ intake
+PRIVATE_MEDIA_ROOT = BASE_DIR / "private_media"
+PRIVATE_MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
+MAX_UPLOAD_SIZE_BYTES = 20 * 1024 * 1024  # 20 MB

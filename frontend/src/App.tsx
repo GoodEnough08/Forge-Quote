@@ -8,6 +8,8 @@ import { RFQRegister } from "./pages/RFQRegister";
 import { RFQDetails } from "./pages/RFQDetails";
 import { CostingWorkspace } from "./pages/CostingWorkspace";
 import { RateMastersPage } from "./pages/RateMastersPage";
+import { AIIntakeWorkspace } from "./pages/AIIntakeWorkspace";
+import { HistoricalQuotesPage } from "./pages/HistoricalQuotesPage";
 import { PhasePlaceholder } from "./pages/PhasePlaceholder";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -44,6 +46,10 @@ export const App: React.FC = () => {
             <Route path="costing" element={<CostingWorkspace />} />
             <Route path="rates" element={<RateMastersPage />} />
 
+            {/* Phase 3: AI-Assisted RFQ Intake & Historical Quotation Search */}
+            <Route path="intake" element={<AIIntakeWorkspace />} />
+            <Route path="history" element={<HistoricalQuotesPage />} />
+
             {/* Upcoming Phase Placeholders */}
             <Route
               path="approvals"
@@ -52,16 +58,6 @@ export const App: React.FC = () => {
                   title="Sales Head Commercial Approval Inbox"
                   phase={4}
                   details="Enforcement of the ₹25,00,000 annual value threshold, margin inspection, and approve/reject/revision workflows will be implemented in Phase 4."
-                />
-              }
-            />
-            <Route
-              path="history"
-              element={
-                <PhasePlaceholder
-                  title="Historical Quotation Search & Excel Import"
-                  phase={3}
-                  details="Searchable quote archive and OpenPyXL batch import for ~1,400 legacy quotations will be implemented in Phases 3 and 4."
                 />
               }
             />

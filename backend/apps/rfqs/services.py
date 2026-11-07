@@ -8,6 +8,21 @@ from apps.accounts.models import User
 from apps.rfqs.models import RFQ, Part, RFQStatus
 
 
+def generate_next_rfq_number() -> str:
+    from datetime import date
+    now = date.today()
+    prefix = f"RFQ-{now.strftime('%y%m')}-"
+    last_rfq = RFQ.objects.filter(rfq_number__startswith=prefix).order_by("-rfq_number").first()
+    if last_rfq:
+        try:
+            last_seq = int(last_rfq.rfq_number.split("-")[-1])
+            return f"{prefix}{last_seq + 1:03d}"
+        except ValueError:
+            pass
+    count = RFQ.objects.count() + 10
+    return f"{prefix}{count:03d}"
+
+
 def list_rfqs(
     search: Optional[str] = None,
     status_filter: Optional[str] = None,

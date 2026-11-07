@@ -4,6 +4,12 @@ import {
   MachineRate,
   CostingCalculationResponse,
   CostingSheetData,
+  IntakeSession,
+  IntakeDocument,
+  ExtractedField,
+  SuggestedRouting,
+  HistoricalQuotation,
+  HistoricalQuoteComparison,
 } from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
@@ -61,6 +67,98 @@ export const costingApi = {
   },
   getByRfq: async (rfqId: number | string) => {
     const res = await api.get(`/costing/rfq/${rfqId}`);
+    return res.data;
+  },
+};
+
+// Phase 3 AI-Assisted RFQ Intake API
+export const intakeApi = {
+  listSessions: async (): Promise<IntakeSession[]> => {
+    const res = await api.get<IntakeSession[]>("/intake/sessions");
+    return res.data;
+  },
+  createSession: async (payload: { title?: string; notes?: string }): Promise<IntakeSession> => {
+    const res = await api.post<IntakeSession>("/intake/sessions", payload);
+    return res.data;
+  },
+  getSession: async (sessionId: number): Promise<IntakeSession> => {
+    const res = await api.get<IntakeSession>(`/intake/sessions/${sessionId}`);
+    return res.data;
+  },
+  deleteSession: async (sessionId: number): Promise<void> => {
+    await api.delete(`/intake/sessions/${sessionId}`);
+  },
+  uploadDocuments: async (sessionId: number, formData: FormData): Promise<IntakeDocument[]> => {
+    const res = await api.post<IntakeDocument[]>(`/intake/sessions/${sessionId}/upload`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  },
+  runExtraction: async (sessionId: number): Promise<{ session: IntakeSession; ai_mode: string; excel_preview?: any }> => {
+    const res = await api.post(`/intake/sessions/${sessionId}/extract`);
+    return res.data;
+  },
+  updateField: async (
+    sessionId: number,
+    fieldId: number,
+    payload: { status?: string; confirmed_value?: string }
+  ): Promise<ExtractedField> => {
+    const res = await api.patch<ExtractedField>(`/intake/sessions/${sessionId}/fields/${fieldId}`, payload);
+    return res.data;
+  },
+  updateRouting: async (
+    sessionId: number,
+    routingId: number,
+    payload: Partial<SuggestedRouting>
+  ): Promise<SuggestedRouting> => {
+    const res = await api.patch<SuggestedRouting>(`/intake/sessions/${sessionId}/routing/${routingId}`, payload);
+    return res.data;
+  },
+  commitSession: async (
+    sessionId: number,
+    overrides?: any
+  ): Promise<{ detail: string; rfq_id: number; rfq_number: string; part_id?: number }> => {
+    const res = await api.post(`/intake/sessions/${sessionId}/commit`, overrides || {});
+    return res.data;
+  },
+  getDocumentDownloadUrl: (docId: number) => {
+    return `${API_BASE_URL}/intake/documents/${docId}/download`;
+  },
+};
+
+// Phase 3 Historical Quote Search API
+export const historyApi = {
+  searchQuotes: async (params: Record<string, any>): Promise<HistoricalQuotation[]> => {
+    const res = await api.get<HistoricalQuotation[]>("/history/quotes", { params });
+    return res.data;
+  },
+  getQuote: async (quoteId: number): Promise<HistoricalQuotation> => {
+    const res = await api.get<HistoricalQuotation>(`/history/quotes/${quoteId}`);
+    return res.data;
+  },
+  compareQuotes: async (quoteIdA: number, quoteIdB: number): Promise<HistoricalQuoteComparison> => {
+    const res = await api.post<HistoricalQuoteComparison>("/history/compare", {
+      quote_id_a: quoteIdA,
+      quote_id_b: quoteIdB,
+    });
+    return res.data;
+  },
+  importExcel: async (file: File): Promise<{ total_imported: number; errors: string[] }> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await api.post("/history/import-excel", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  },
+  applyReferenceToRfq: async (
+    quoteId: number,
+    rfqId: number
+  ): Promise<{ detail: string; rfq_id: number; quote_number: string }> => {
+    const res = await api.post("/history/apply-reference", {
+      quote_id: quoteId,
+      rfq_id: rfqId,
+    });
     return res.data;
   },
 };

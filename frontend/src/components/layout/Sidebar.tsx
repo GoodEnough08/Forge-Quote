@@ -9,10 +9,12 @@ import {
   History,
   Settings,
   Factory,
+  Sparkles,
 } from "lucide-react";
 
 const navItems = [
   { label: "Overview", to: "/dashboard", icon: LayoutDashboard },
+  { label: "AI RFQ Intake", to: "/intake", icon: Sparkles },
   { label: "RFQ Register", to: "/rfqs", icon: FileSpreadsheet },
   { label: "Costing Workspace", to: "/costing", icon: Calculator },
   { label: "Rate Masters", to: "/rates", icon: Database },
