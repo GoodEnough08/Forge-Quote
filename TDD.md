@@ -1,6 +1,7 @@
 # ForgeQuote — Technical Design Document (TDD)
 
 **Project Title**: ForgeQuote — Precision Costing & RFQ Lifecycle System for Industrial Forging  
+**GitHub Repository**: https://github.com/GoodEnough08/Forge-Quote  
 **Document Version**: 1.0.0 (Phase 5 Final Release)  
 **Author**: ForgeQuote Engineering Team  
 **Date**: November 2026  

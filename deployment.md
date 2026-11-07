@@ -1,5 +1,8 @@
 # ForgeQuote Deployment & Operations Guide
 
+**GitHub Repository**: https://github.com/GoodEnough08/Forge-Quote  
+**Release**: Version 1.0.0 (Phase 5 Final Release)  
+
 This document provides complete instructions for local development, production configuration, Docker containerization, cloud deployment on Render (Backend) and Vercel (Frontend), and common troubleshooting steps.
 
 ---
